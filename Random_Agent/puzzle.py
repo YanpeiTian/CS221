@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import logic
 import constants as c
 
-REFRESH_RATE=10
+REFRESH_RATE=1
 SLEEP_TIME=1
-N_ITERATION=10
+N_ITERATION=1000
 
 stat=[]
 
@@ -100,7 +100,7 @@ class GameGrid(Frame):
     def key_down(self, key):
         # key = repr(event.char)
         if self.done==1:
-            time.sleep(SLEEP_TIME)
+            # time.sleep(SLEEP_TIME)
             max=np.max(np.max(self.matrix))
             stat.append((self.score,max))
             self.quit()
@@ -163,7 +163,7 @@ np.savetxt('random_agent.dat', stat)
 
 x=[i+1 for i in range(len(stat))]
 fig, ax = plt.subplots()
-ax.plot(x, stat[:,0])
+ax.scatter(x, stat[:,0])
 
 ax.set(xlabel='Individual Trial', ylabel='Total Score',
        title='Random Agent Performance')
@@ -172,3 +172,11 @@ fig.savefig("random_agent.png")
 
 print("Average score is: "+str(np.average(stat[:,0])))
 print("Standard deviation is: "+str(np.std(stat[:,0])))
+
+dict={}
+for i in range(len(stat)):
+    if stat[i,1] in dict.keys():
+        dict[stat[i,1]]+=1
+    else:
+        dict[stat[i,1]]=1
+print(dict)
