@@ -2,11 +2,15 @@ import random
 from tkinter import Frame, Label, CENTER
 import numpy as np
 import time
+import matplotlib
+import matplotlib.pyplot as plt
 
 import logic
 import constants as c
 
-REFRESH_RATE=50
+REFRESH_RATE=10
+SLEEP_TIME=1
+N_ITERATION=100
 
 stat=[]
 
@@ -96,7 +100,7 @@ class GameGrid(Frame):
     def key_down(self, key):
         # key = repr(event.char)
         if self.done==1:
-            time.sleep(1)
+            time.sleep(SLEEP_TIME)
             stat.append(self.score)
             self.quit()
 
@@ -147,9 +151,22 @@ class GameGrid(Frame):
             return n+2*self.singleScore(n/2)
 
 
-for i in range(10):
+for i in range(N_ITERATION):
     print("This is "+str(i+1)+" iteration.")
     gamegrid = GameGrid()
     gamegrid.destroy()
+
 print(stat)
+np.savetxt('random_agent.dat', stat)
+
+x=[i+1 for i in range(len(stat))]
+fig, ax = plt.subplots()
+ax.plot(x, stat)
+
+ax.set(xlabel='number of iteration', ylabel='score',
+       title='random agent performance')
+
+fig.savefig("random_agent.png")
+
 print("Average score is: "+str(np.average(stat)))
+print("Standard deviation is: "+str(np.std(stat)))
