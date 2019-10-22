@@ -35,6 +35,7 @@ class GameGrid(Frame):
         self.grid_cells = []
         self.grid_cells = []
         self.score=0
+        self.step=0
         self.done=0
 
         self.init_grid()
@@ -101,8 +102,9 @@ class GameGrid(Frame):
         # key = repr(event.char)
         if self.done==1:
             # time.sleep(SLEEP_TIME)
+            self.score=self.getScore(self.matrix)
             max=np.max(np.max(self.matrix))
-            stat.append((self.score,max))
+            stat.append((self.score,max,self.step))
             self.quit()
 
         if key == c.KEY_BACK and len(self.history_matrixs) > 1:
@@ -111,7 +113,6 @@ class GameGrid(Frame):
             print('back on step total step:', len(self.history_matrixs))
         elif key in self.commands:
             self.matrix, done = self.commands[key](self.matrix)
-            self.score=self.getScore(self.matrix)
             if done:
                 self.matrix = logic.add_two(self.matrix)
                 # record last move
@@ -130,6 +131,7 @@ class GameGrid(Frame):
                     self.grid_cells[1][2].configure(
                         text="Lose!", bg=c.BACKGROUND_COLOR_CELL_EMPTY)
                     self.done=1
+            self.step+=1
 
     def generate_next(self):
         index = (self.gen(), self.gen())
@@ -163,7 +165,7 @@ np.savetxt('random_agent.dat', stat)
 
 x=[i+1 for i in range(len(stat))]
 fig, ax = plt.subplots()
-ax.scatter(x, stat[:,0])
+ax.plot(x, stat[:,0])
 
 ax.set(xlabel='Individual Trial', ylabel='Total Score',
        title='Random Agent Performance')
@@ -180,3 +182,11 @@ for i in range(len(stat)):
     else:
         dict[stat[i,1]]=1
 print(dict)
+
+fig, ax = plt.subplots()
+ax.plot(x, stat[:,2])
+
+ax.set(xlabel='Individual Trial', ylabel='Total Step',
+       title='Random Agent Performance, Step')
+
+fig.savefig("random_agent_step.png")
