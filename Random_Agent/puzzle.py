@@ -10,7 +10,7 @@ import constants as c
 
 REFRESH_RATE=10
 SLEEP_TIME=1
-N_ITERATION=100
+N_ITERATION=10
 
 stat=[]
 
@@ -101,7 +101,8 @@ class GameGrid(Frame):
         # key = repr(event.char)
         if self.done==1:
             time.sleep(SLEEP_TIME)
-            stat.append(self.score)
+            max=np.max(np.max(self.matrix))
+            stat.append((self.score,max))
             self.quit()
 
         if key == c.KEY_BACK and len(self.history_matrixs) > 1:
@@ -157,16 +158,17 @@ for i in range(N_ITERATION):
     gamegrid.destroy()
 
 print(stat)
+stat=np.array(stat)
 np.savetxt('random_agent.dat', stat)
 
 x=[i+1 for i in range(len(stat))]
 fig, ax = plt.subplots()
-ax.plot(x, stat)
+ax.plot(x, stat[:,0])
 
-ax.set(xlabel='number of iteration', ylabel='score',
-       title='random agent performance')
+ax.set(xlabel='Individual Trial', ylabel='Total Score',
+       title='Random Agent Performance')
 
 fig.savefig("random_agent.png")
 
-print("Average score is: "+str(np.average(stat)))
-print("Standard deviation is: "+str(np.std(stat)))
+print("Average score is: "+str(np.average(stat[:,0])))
+print("Standard deviation is: "+str(np.std(stat[:,0])))
