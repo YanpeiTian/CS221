@@ -61,13 +61,13 @@ def run_game(game_class=Game2048, title='2048', data_dir=None):
         while True:
             if iniFlag:
                 oldBoard = copy.deepcopy(manager.game.grid)
-                print("hello")
+                # print("hello")
                 convGrid = convert(manager.game.grid)
                 process = subprocess.Popen(['./a.out', convGrid], stdout=subprocess.PIPE)
-                print(convGrid)
+                # print(convGrid)
                 stdout = process.communicate()[0]
                 mv = stdout[len(stdout) - 2] - 48
-                print("move {}".format(mv))
+                # print("move {}".format(mv))
                 #mv = getMove(convGrid)
                 eve = pygame.event.Event(pygame.locals.KEYDOWN)
                 if mv == 0:

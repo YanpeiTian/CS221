@@ -6,6 +6,8 @@ import os
 import random
 import sys
 import pygame
+import numpy as np
+import matplotlib.pyplot as plt
 
 try:
     from utils import load_font, center, BOX
@@ -15,6 +17,9 @@ except ImportError:
 if sys.version_info[0] < 3:
     range = xrange
 
+# FIXME change it to some other value
+NUMBER_OF_ITERATION = 2
+stat = []
 
 class AnimatedTile(object):
     """This class represents a moving tile."""
@@ -45,10 +50,10 @@ class Game2048(object):
     COUNT_Y = 4
 
     # The tile to get to win the game.
-    WIN_TILE = 2048
+    WIN_TILE = 262144
 
     # Length of tile moving animation.
-    ANIMATION_FRAMES = 10
+    ANIMATION_FRAMES = 1
 
     BACKGROUND = (0xbb, 0xad, 0xa0)
     FONT_NAME = os.path.join(os.path.dirname(__file__), 'ClearSans.ttf')
@@ -80,6 +85,7 @@ class Game2048(object):
         # Stores the manager, screen, score, state, and winning status.
         self.manager = manager
         self.old_score = self.score = score
+        self.steps = 0
         self.screen = screen
 
         # Whether the game is won, 0 if not, 1 to show the won overlay,
@@ -243,17 +249,19 @@ class Game2048(object):
         return self.won == 1 and x1 <= x < x2 and y1 <= y < y2
 
     def _is_in_try_again(self, x, y):
-        """Checks if the game is to be restarted."""
-        if self.won == 1:
-            # Checks if in try button on won screen.
-            x1, y1, x2, y2 = self._won_try_again
-            return x1 <= x < x2 and y1 <= y < y2
-        elif self.lost:
-            # Checks if in try button on lost screen.
-            x1, y1, x2, y2 = self._lost_try_again
-            return x1 <= x < x2 and y1 <= y < y2
-        # Otherwise just no.
-        return False
+        return True
+        # """Checks if the game is to be restarted."""
+        # if self.won == 1:
+        #     # Checks if in try button on won screen.
+        #     x1, y1, x2, y2 = self._won_try_again
+        #     return x1 <= x < x2 and y1 <= y < y2
+        # elif self.lost:
+        #     # Checks if in try button on lost screen.
+        #     # x1, y1, x2, y2 = self._lost_try_again
+        #     # return x1 <= x < x2 and y1 <= y < y2
+        #     return True
+        # # Otherwise just no.
+        # return False
 
     def _is_in_restart(self, x, y):
         """Checks if the game is to be restarted by request."""
@@ -437,14 +445,18 @@ class Game2048(object):
         """Spawn some new tiles."""
         free = self.free_cells()
         for x, y in random.sample(free, min(count, len(free))):
-            self.grid[y][x] = random.randint(0, 10) and 2 or 4
+            # FIXME create only 2 tiles
+            self.grid[y][x] = 2
+            # self.grid[y][x] = random.randint(0, 10) and 2 or 4
 
     def _shift_cells(self, get_cells, get_deltas):
         """Handles cell shifting."""
         # Don't do anything when there is an overlay.
-        if self.lost or self.won == 1:
+        if self.lost == 1:
             return
 
+        # every shft is a step
+        self.steps += 1
         # A dictionary to store the movement of tiles, and new values if it merges.
         tile_moved = {}
         for y, row in enumerate(self.grid):
@@ -507,6 +519,8 @@ class Game2048(object):
         else:
             self.old.pop()
 
+        # stat.append((self.score, self.steps))
+
         if not self.has_free_cells() and not self.has_free_moves():
             self.lost = True
 
@@ -530,8 +544,53 @@ class Game2048(object):
         if self.won == 1:
             self.draw_won_overlay()
         elif self.lost:
-            self.draw_lost_overlay()
+            # self.draw_lost_overlay()
+            # FIXME comment out below and uncomment the above to play the normal game
+            stat.append((self.score, self.steps))
+            self.manager.increment_iteration()
+            print("End of iteration {}, current score for this iteration is {}, "
+                  "num steps for this iteration is {}".format(self.manager.iteration, self.score, self.steps))
+            self.score = 0
+            self.steps = 0
+            if self.manager.iteration < NUMBER_OF_ITERATION:
+                self.manager.new_game()
+            else:
+                self.plot()
+                sys.exit()
         pygame.display.flip()
+
+    def plot(self):
+        print(stat)
+        statArr = np.array(stat)
+        np.savetxt('expectimax.dat', statArr)
+
+        x = [i + 1 for i in range(len(statArr))]
+        fig, ax = plt.subplots()
+        ax.plot(x, statArr[:, 0])
+
+        ax.set(xlabel='Individual Trial', ylabel='Total Score',
+               title='Expectimax Performance')
+
+        fig.savefig("expectimax_score.png")
+
+        print("Average score is: " + str(np.average(statArr[:, 0])))
+        print("Standard deviation is: " + str(np.std(statArr[:, 0])))
+
+        dict = {}
+        for i in range(len(statArr)):
+            if statArr[i, 1] in dict.keys():
+                dict[statArr[i, 1]] += 1
+            else:
+                dict[statArr[i, 1]] = 1
+        print(dict)
+
+        fig, ax = plt.subplots()
+        ax.plot(x, statArr[:, 1])
+
+        ax.set(xlabel='Individual Trial', ylabel='Total Steps',
+               title='Expectimax Performance, Step')
+
+        fig.savefig("expectimax_step.png")
 
     def on_quit(self, event):
         raise SystemExit()

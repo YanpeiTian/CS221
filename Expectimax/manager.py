@@ -20,8 +20,10 @@ class GameManager(object):
         self.save_name = file_name
         self.game_class = cls
 
+        self._steps = 0
         self._score_changed = False
         self._running = True
+        self._iteration = 0
 
         self._change_event = Event()
         self._saved_event = Event()
@@ -90,8 +92,14 @@ class GameManager(object):
 
     def new_game(self):
         """Creates a new game of 2048."""
+        # self._iteration += 1
         self.game = self.game_class(self, self.screen)
+        self._steps = 0
+        self._score = 0
         self.save()
+
+    def increment_iteration(self):
+        self._iteration += 1
 
     def _load_score(self):
         """Load the best score from file."""
@@ -105,6 +113,7 @@ class GameManager(object):
             delta = score - self._score
             self._score = score
             self._score_changed = True
+            self._steps += 1
             self.save()
             return delta
         return 0
@@ -112,6 +121,14 @@ class GameManager(object):
     @property
     def score(self):
         return self._score
+
+    @property
+    def steps(self):
+        return self._steps
+
+    @property
+    def iteration(self):
+        return self._iteration
 
     def save(self):
         self._saved_event.clear()
