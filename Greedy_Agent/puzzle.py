@@ -46,8 +46,19 @@ class GameGrid(Frame):
 
     # Agent of the game
     def agent(self):
-        key=random.choice(["'w'","'a'","'s'","'d'"])
-        self.key_down(key)
+        # simple greedy Agent
+        keys=["'w'","'a'","'s'","'d'"]
+        scores=[0]*4
+        matrix=np.zeros((4,4,4))
+        for i in range(len(keys)):
+            matrix[i], _ = self.commands[keys[i]](self.matrix)
+            scores[i]=self.getScore(matrix[i])
+
+        bestScore = max(scores)
+        bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
+        chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+
+        self.key_down(keys[chosenIndex])
         self.after(REFRESH_RATE, self.agent)
 
     def init_grid(self):
@@ -161,16 +172,16 @@ for i in range(N_ITERATION):
 
 print(stat)
 stat=np.array(stat)
-np.savetxt('random_agent.dat', stat)
+np.savetxt('greedy_agent.dat', stat)
 
 x=[i+1 for i in range(len(stat))]
 fig, ax = plt.subplots()
 ax.plot(x, stat[:,0])
 
 ax.set(xlabel='Individual Trial', ylabel='Total Score',
-       title='Random Agent Performance')
+       title='Greedy Agent Performance')
 
-fig.savefig("random_agent_score.png")
+fig.savefig("greedy_agent_score.png")
 
 scores=np.array(stat[:,0],dtype=np.int)
 scores.sort()
@@ -189,7 +200,7 @@ ax.plot(x, cdf)
 ax.set(xlabel='Score', ylabel='Probability',
        title='Cumulative Distribution Function of Scores')
 
-fig.savefig("random_agent_score_cdf.png")
+fig.savefig("greedy_agent_score_cdf.png")
 
 
 print("Average score is: "+str(np.average(stat[:,0])))
@@ -208,9 +219,9 @@ x=[i+1 for i in range(len(stat))]
 ax.plot(x, stat[:,2])
 
 ax.set(xlabel='Individual Trial', ylabel='Total Step',
-       title='Random Agent Performance, Step')
+       title='Greedy Agent Performance, Step')
 
-fig.savefig("random_agent_step.png")
+fig.savefig("greedy_agent_step.png")
 
 steps=np.array(stat[:,2],dtype=np.int)
 steps.sort()
@@ -229,4 +240,4 @@ ax.plot(x, cdf)
 ax.set(xlabel='Number of Steps', ylabel='Probability',
        title='Cumulative Distribution Function of Total Steps')
 
-fig.savefig("random_agent_step_cdf.png")
+fig.savefig("greedy_agent_step_cdf.png")
