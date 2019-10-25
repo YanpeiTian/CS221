@@ -1,0 +1,4 @@
+appdirs==1.4.3
+pygame==1.9.3
+subprocess.run==0.0.8
+ushlex==0.99
