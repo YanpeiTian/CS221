@@ -17,6 +17,7 @@ double weight[4][4] = {
 int values[2] = {1, 2};
 double probs[2] = {0.9, 0.1};
 
+// check if two boards are the same.
 bool inline isSame(board grid1, board grid2) {
     for(int i = 0; i < 4; i++)
         for(int j = 0; j < 4; j++)
