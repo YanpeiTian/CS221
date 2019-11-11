@@ -253,7 +253,7 @@ int main(int argc ,char * argv[]) {
         for(int j = 0; j < 4; j++)
             matrix.arr[i][j] = vec[ind++];
     int depth = 2;
-    
+
     int soFar = 1;
 
     int move = bestMove(matrix, depth);   //move to be printed
