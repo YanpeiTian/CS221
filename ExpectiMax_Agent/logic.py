@@ -6,6 +6,9 @@
 # Note that written answers are commented out to allow us to run your
 # code easily while grading your problem set.
 import random
+import numpy as np
+
+singleScore=[0,0,4,16,48,128,320,768,1792,4096,9216,20480,45056,98304,212992,458752,983040]
 
 #######
 #Task 1a#
@@ -59,7 +62,7 @@ def add_two(mat):
 def game_state(mat):
     for i in range(len(mat)):
         for j in range(len(mat[0])):
-            if mat[i][j] == 2048:
+            if mat[i][j] == -1:
                 return 'win'
     for i in range(len(mat)-1):
         # intentionally reduced to check the row on the right and below
@@ -199,3 +202,11 @@ def right(game):
     game = cover_up(game)[0]
     game = reverse(game)
     return (game, done)
+
+def getScore(matrix):
+    score=0
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if matrix[i][j]>2:
+                score=score+singleScore[int(np.log2(matrix[i][j]))]
+    return score

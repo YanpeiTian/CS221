@@ -9,10 +9,10 @@ import ExpectiMax
 import logic
 import constants as c
 
-REFRESH_RATE=1
+REFRESH_RATE=0
 SLEEP_TIME=1
-N_ITERATION=1000
-DEPTH=10
+N_ITERATION=10
+DEPTH=2
 
 stat=[]
 
@@ -160,3 +160,6 @@ for i in range(N_ITERATION):
     print("This is "+str(i+1)+" iteration.")
     gamegrid = GameGrid()
     gamegrid.destroy()
+
+
+print(stat)

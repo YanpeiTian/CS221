@@ -6,20 +6,17 @@ FAIL_SCORE=-1e10
 moves=["'w'","'a'","'s'","'d'"]
 
 def getMove(grid,depth):
-    move=0
-    high=FAIL_SCORE
+    scores=[FAIL_SCORE]*4
 
     for i in range(4):
         newGrid=np.array(moveGrid(grid,i))
         if(isSame(grid,newGrid)==False):
 
-            score=expectiMax()
-            
-            if score>high:
-                high=score
-                move=i
+            score=expectiMax(newGrid,1,depth)
+            scores[i]=score
 
-    return moves[move]
+    index=[i for i in range(4) if scores[i]==max(scores)]
+    return moves[random.choice(index)]
 
 def moveGrid(grid,i):
     if i==0:
@@ -38,40 +35,39 @@ def moveGrid(grid,i):
 def isSame(grid1,grid2):
     for i in range(4):
         for j in range(4):
-            if grid1[i,j]!=grid[i,j]:
+            if grid1[i,j]!=grid2[i,j]:
                 return False
     return True
 
+# grid:   Game grid
+# depth:  search depth
+# agent:  0 is player, 1 is computer
+def expectiMax(grid,agent,depth):
+    score=0
 
-# double expectimax(Board b, int steps, int agent, TranspositionTable& t) {
-#     Board dup(b);
-#     double score = 0;
-#     if (!canMove(b)) return -DBL_MAX;
-#     if (steps == 0) return b.calculateScore(false);
-#     else if (agent == 1){
-#         int c = 0;
-#         #pragma omp parallel for
-#         for (int i=0; i<16; i++) {
-#             if (b.getTile(i) == 0 && c < steps+2) {
-#                 dup.state = b.state;
-#                 dup.setTile(i,1);
-#                 score += 0.9 * expectimax(dup,steps-1,0,t);
-#                 dup.state = b.state;
-#                 dup.setTile(i,2);
-#                 score += 0.1 * expectimax(dup,steps-1,0,t);
-#                 c++;
-#             }
-#         }
-#         if (c == 0) return -DBL_MAX;
-#         return score/c;
-#     }
-#     else if (agent == 0) {
-#         for (int i : valid_moves(b)) {
-#             dup.state = b.state;
-#             dup.move(i,false,false);
-#             score = max(score, expectimax(dup,steps-1,1,t));
-#         }
-#         return score;
-#     }
-#     return 0;
-# }
+    if(logic.game_state(grid)=='lose'):
+        return FAIL_SCORE
+    if depth==0:
+        return logic.getScore(grid)
+
+    # Player's turn
+    if agent==0:
+        for i in range(4):
+            newGrid=moveGrid(grid,i)
+            score = max(score, expectiMax(newGrid,1,depth-1))
+        return score
+    # Computer's turn
+    elif agent==1:
+        count=0
+        score=0
+        for i in range(4):
+            for j in range(4):
+                if(grid[i][j]==0):
+                    grid[i][j]=2
+                    count+=1
+                    score+=expectiMax(grid,0,depth)
+                    grid[i][j]=0
+        if count==0:
+            return FAIL_SCORE
+        else:
+            return score/count
