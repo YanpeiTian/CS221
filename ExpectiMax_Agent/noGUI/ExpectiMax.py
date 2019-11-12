@@ -8,10 +8,6 @@ moves=["'w'","'a'","'s'","'d'"]
 def getMove(grid,depth):
     scores=[FAIL_SCORE]*4
 
-    # count=np.sum([1 for i in range(16) if grid[i//4][i%4]==0])
-    # if count<5:
-    #     depth+=1
-
     for i in range(4):
         newGrid=np.array(moveGrid(grid,i))
         if(isSame(grid,newGrid)==False):
@@ -39,7 +35,7 @@ def moveGrid(grid,i):
 def isSame(grid1,grid2):
     for i in range(4):
         for j in range(4):
-            if grid1[i,j]!=grid2[i,j]:
+            if grid1[i][j]!=grid2[i][j]:
                 return False
     return True
 
