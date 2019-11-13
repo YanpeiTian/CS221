@@ -9,7 +9,7 @@ import random
 import numpy as np
 
 singleScore=[0,0,4,16,48,128,320,768,1792,4096,9216,20480,45056,98304,212992,458752,983040]
-
+position=[[13.5, 12.1, 10.2, 9.9],[9.9, 8.8, 7.6, 7.2],[6.0, 5.6, 3.7, 1.6],[1.2, 0.9, 0.5, 0.3]]
 #######
 #Task 1a#
 #######
@@ -208,5 +208,5 @@ def getScore(matrix):
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
             if matrix[i][j]>2:
-                score=score+singleScore[int(np.log2(matrix[i][j]))]
+                score=score+singleScore[int(np.log2(matrix[i][j]))]*position[i][j]
     return score

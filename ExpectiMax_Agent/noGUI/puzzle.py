@@ -9,7 +9,7 @@ import logic
 import constants as c
 
 ITERATION=1000
-DEPTH=3
+DEPTH=2
 stat=[]
 
 def main():
