@@ -39,6 +39,18 @@ def isSame(grid1,grid2):
                 return False
     return True
 
+# for progress report, using this board layout to calculate utility
+tileWeights = [[51.2, 32.6, 26.4, 20.2],
+               [22.6, 18.8, 13.2, 10.8],
+               [8.9,  5.1,  2.6,  1],
+               [1.2,  1,    0.8,  .1]]
+def getUtility(grid):
+    multiplier = 1
+    for r in range(4):
+        for c in range(4):
+            multiplier += grid[r][c] * tileWeights[r][c]
+    return multiplier
+
 # grid:   Game grid
 # depth:  search depth
 # agent:  0 is player, 1 is computer
@@ -48,7 +60,7 @@ def expectiMax(grid,agent,depth):
     if(logic.game_state(grid)=='lose'):
         return FAIL_SCORE
     if depth==0:
-        return logic.getScore(grid)
+        return logic.getScore(grid) * getUtility(grid)
 
     # Player's turn
     if agent==0:
