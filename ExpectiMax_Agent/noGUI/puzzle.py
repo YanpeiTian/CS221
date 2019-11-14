@@ -8,8 +8,8 @@ import ExpectiMax
 import logic
 import constants as c
 
-ITERATION=1000
-DEPTH=2
+ITERATION=100
+DEPTH=3
 stat=[]
 
 def main():

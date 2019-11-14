@@ -8,8 +8,8 @@ import minimax
 import logic
 import constants as c
 
-ITERATION=5
-DEPTH=2
+ITERATION=100
+DEPTH=3
 stat=[]
 
 def main():
