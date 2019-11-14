@@ -46,6 +46,35 @@ def isSame(grid1,grid2):
 # grid:   Game grid
 # depth:  search depth
 # agent:  0 is player, 1 is computer
+# def minimax(grid, agent, depth):
+#     score=0
+#
+#     if(logic.game_state(grid)=='lose'):
+#         return FAIL_SCORE
+#     if depth==0:
+#         return logic.getScore(grid)
+#
+#     # Player's turn
+#     if agent==0:
+#         for i in range(4):
+#             newGrid=moveGrid(grid,i)
+#             score = max(score, minimax(newGrid,1,depth))
+#         return score
+#     # Computer's turn
+#     elif agent==1:
+#         count=0
+#         score= float('inf')
+#         for i in range(4):
+#             for j in range(4):
+#                 if(grid[i][j]==0):
+#                     grid[i][j]=2
+#                     count+=1
+#                     score = min(score, minimax(grid,0,depth - 1))
+#                     grid[i][j]=0
+#         if count==0:
+#             return FAIL_SCORE
+#         else:
+#             return score
 def minimax(grid, agent, depth):
     def alphaBetaPruning(grid, agent, depth, alpha, beta):
         # base case
