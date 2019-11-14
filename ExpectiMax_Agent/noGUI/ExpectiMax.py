@@ -54,7 +54,7 @@ def expectiMax(grid,agent,depth):
     if agent==0:
         for i in range(4):
             newGrid=moveGrid(grid,i)
-            score = max(score, expectiMax(newGrid,1,depth-1))
+            score = max(score, expectiMax(newGrid,1,depth))
         return score
     # Computer's turn
     elif agent==1:
@@ -65,7 +65,7 @@ def expectiMax(grid,agent,depth):
                 if(grid[i][j]==0):
                     grid[i][j]=2
                     count+=1
-                    score+=expectiMax(grid,0,depth)
+                    score+=expectiMax(grid,0,depth - 1)
                     grid[i][j]=0
         if count==0:
             return FAIL_SCORE
