@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import montecarlo
 import logic
 
-ITERATION=1
-NUM_BACKGROUND_RUNS=100
+ITERATION=10
+NUM_BACKGROUND_RUNS=5
 stat=[]
 
 def main():
@@ -28,7 +28,6 @@ def main():
             move=montecarlo.getMove(matrix, NUM_BACKGROUND_RUNS)
             # print("got a move " + str(move))
             matrix=montecarlo.moveGrid(matrix,move)
-            #print(matrix)
             step+=1
 
         print("Step= "+str(step))

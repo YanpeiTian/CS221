@@ -10,45 +10,29 @@ def getMove(grid, numBackgroundRuns):
     # index = direction
     # make n background runs for each direction, follow random policy until game ends
     # group by initial direction
-    # calculate avg of each of the 4 directions
-    # return the direction with the max avg score
+    # calculate util of each of the 4 directions
+    # return the direction with the max util
     # estimated Q_pi(s, a) = average of utility where prev state = s, action = a (Page 29 mdp2 lecture)
 
     # index 0 = up avg steps, 1 = left avg, 2 = down avg, 3 = right avg
-    listOfSteps = []
+    accumlatedScoresAllDirections = []
     for i in range(4):
-        # print("current direction is " + str(i))
-        # if initial direction is 'i'
+        # initial direction is i, then make n copies of the grid afer moving in i direction
         grids = [moveGrid(grid, i)] * numBackgroundRuns
-        # get a list of steps it took to reach end state if initial direction is i
-        stepsTaken = randomPolicyUntilGameOver(grids)
-        # print("returned from randomPolicyUntilGameOver, i is " + str(i))
-        listOfSteps.append(stepsTaken)
+        scores = randomPolicyUntilGameOver(grids)
+        accumlatedScoresAllDirections.append(sum(scores)) # index i => sum of accumulated scores if initial direction is i
 
-    avgSteps = []
-    for i in range(4):
-        avgSteps.append(sum(listOfSteps[i]) / numBackgroundRuns)
-
-    index = [i for i in range(4) if avgSteps[i] == max(avgSteps)]
+    index = [i for i in range(4) if accumlatedScoresAllDirections[i] == max(accumlatedScoresAllDirections)]
     return random.choice(index)
 
 def moveGrid(grid,i):
     new=np.zeros((4,4),dtype=np.int)
-    # print("input grid is ")
-    # print(grid)
-    # print("direction is up")
     if i==0:
         # move up
         grid=np.transpose(grid)
-        # print("grid transpose is ")
-        # print(grid)
         for row in range(4):
             new[row,:]=logic.move(grid[row,:])
-            # print("row by row printing new grid")
-            # print(new)
         new=np.transpose(new)
-        # print("printing new grid")
-        # print(new)
     if i==1:
         # move left
         for row in range(4):
@@ -65,22 +49,24 @@ def moveGrid(grid,i):
             new[row,:]=np.flip(logic.move(np.flip(grid[row,:])))
     return new
 
-# return a list of steps taken
+# input: a list of n identical grids
+# output: sum of scores at each step of each grid after following random policy until game over
 def randomPolicyUntilGameOver(grids):
-    stepsTaken = []
+    scores = []
+    # for each copy of the grid
     for i in range(len(grids)):
-        steps = 0
+        score = 0
+        # keep playing randomly until game is lost
         while logic.game_state(grids[i]) != 'lose':
-            grids[i], lost = randomMove(grids[i])
-            steps += 1
+            grids[i], lost = randomMove(grids[i]) # agent make wasd random move
+            score += logic.getScore(grids[i]) # accumulate score
             if lost:
                 break
-            grids[i], _ = logic.add_two(grids[i])
+            grids[i], _ = logic.add_two(grids[i]) # computer generates a 2
             # print("moving grid with random policy")
             # print(grids[i])
-        stepsTaken.append(steps)
-        # print("move grid game over, returning from randomPolicyUntilGameOver")
-    return stepsTaken
+        scores.append(score)
+    return scores
 
 # return the tuple (new grid, game over boolean) after making one random move
 def randomMove(grid):
