@@ -13,9 +13,7 @@ def add_two(mat):
 
 
 def game_state(mat):
-    if np.any(mat == 0) or np.any(mat[:, 0:-1]==mat[:, 1:]) or np.any(mat[0:-1, :]==mat[1:, :]):
-        return 'not over'
-    return 'lose'
+    return 'not over' if np.any(mat == 0) or np.any(mat[:, 0:-1]==mat[:, 1:]) or np.any(mat[0:-1, :]==mat[1:, :]) else 'lose'
 
 def move(list):
     return moveDict[list[0],list[1],list[2],list[3],:]

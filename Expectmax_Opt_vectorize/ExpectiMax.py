@@ -15,25 +15,22 @@ def getMove(grid,depth):
     return np.random.choice(np.where(scores == scores.max())[0])
 
 def moveGrid(grid,i):
-    new=np.zeros((4,4),dtype=np.int)
-    # new = None
+    # new=np.zeros((4,4),dtype=np.int)
+    new = None
     if i==0:
         # move up
         grid=np.transpose(grid)
-        new = np.stack([logic.move(grid[row,:]) for row in range(4)], axis = 0).astype(int)
-        new=np.transpose(new)
+        new = np.stack([logic.move(grid[row,:]) for row in range(4)], axis = 0).astype(int).T
     elif i==1:
         # move left
         new = np.stack([logic.move(grid[row,:]) for row in range(4)], axis = 0).astype(int)
     elif i==2:
         # move down
         grid=np.transpose(grid)
-        new = np.stack([np.flip(logic.move(np.flip(grid[row,:]))) for row in range(4)], axis = 0).astype(int)
-        new=np.transpose(new)
+        new = np.stack([np.flip(logic.move(np.flip(grid[row,:]))) for row in range(4)], axis = 0).astype(int).T
     elif i==3:
         # move right
         new = np.stack([np.flip(logic.move(np.flip(grid[row,:]))) for row in range(4)], axis = 0).astype(int)
-
     return new
 
 def isSame(grid1,grid2):

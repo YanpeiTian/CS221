@@ -7,7 +7,7 @@ import ExpectiMax
 import logic
 
 ITERATION=10 #100
-DEPTH=3
+DEPTH=2
 stat=[]
 
 def main():
