@@ -12,7 +12,7 @@ import constants as c
 REFRESH_RATE=0
 SLEEP_TIME=1
 N_ITERATION=10
-DEPTH=3
+DEPTH=2
 
 stat=[]
 
