@@ -16,20 +16,20 @@ def main():
         start=time.time()
         step=0
         matrix=np.zeros((4,4),dtype=np.int)
-        matrix, _ = logic.add_two(matrix)
+        matrix = logic.add_two(matrix)
         while True:
-            matrix, success = logic.add_two(matrix)
-            if not success:
+            matrix = logic.add_two(matrix)
+            if logic.game_state(matrix) == 'lose':
                 break
-            # print(matrix)
             if logic.game_state(matrix)=='lose':
                 break
-
-            move=montecarlo.getMove(matrix, NUM_BACKGROUND_RUNS)
-            # print("got a move " + str(move))
-            matrix=montecarlo.moveGrid(matrix,move)
-            step+=1
-
+            matrix = montecarlo.getMove(matrix, NUM_BACKGROUND_RUNS)
+            step += 1
+            # move=montecarlo.getMove(matrix, NUM_BACKGROUND_RUNS)
+            # # print("got a move " + str(move))
+            # matrix=montecarlo.moveGrid(matrix,move)
+            # step+=1
+        print(matrix)
         print("Step= "+str(step))
         print("Max= "+str(2**np.max(matrix)))
         print("Score= "+str(logic.getScore(matrix)))
