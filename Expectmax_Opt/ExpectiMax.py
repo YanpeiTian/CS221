@@ -45,7 +45,7 @@ def isSame(grid1,grid2):
     return np.all(grid1==grid2)
 
 def getUtility(grid):
-    return np.dot(heu3,2**grid.flatten())
+    return np.dot(heu,2**grid.flatten())
     # return np.dot(heu,singleScore[grid.flatten()])
 
 # grid:   Game grid
@@ -69,14 +69,21 @@ def expectiMax(grid,agent,depth):
     elif agent==1:
         count=0
         score=0
+        indexs=[]
         for i in range(4):
             for j in range(4):
                 if(grid[i][j]==0):
-                    grid[i][j]=1
-                    count+=1
-                    score+=expectiMax(grid,0,depth - 1)
-                    grid[i][j]=0
-        if count==0:
+                    indexs.append((i,j))
+
+        if len(indexs)>4:
+            indexs=random.sample(indexs,4)
+
+        for index in indexs:
+            grid[index]=1
+            score+=expectiMax(grid,0,depth - 1)
+            grid[index]=0
+
+        if len(indexs)==0:
             return FAIL_SCORE
         else:
-            return score/count
+            return score/len(indexs)

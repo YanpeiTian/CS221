@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import ExpectiMax
 import logic
 
-ITERATION=100
-DEPTH=3
+ITERATION=10
+DEPTH=4
 stat=[]
 
 def main():
