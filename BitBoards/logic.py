@@ -8,6 +8,21 @@ import logic0
 # [31-28][27-24][23-20][19-16]
 # [15-12][11- 8][ 7- 4][ 3- 0]
 
+# from Expectmax_Opt_vectorize, got board:
+# [[1 1 0 0]
+#  [6 0 0 0]
+#  [3 4 0 0]
+#  [2 1 3 0]]
+# from Expectmax_Opt_vectorize, got utility
+#  882.3000000000001
+
+# transcribed board into binary
+# 0x0001000100000000 0110000000000000 0011010000000000 0010000100110000
+# printBoard(1225084652633465136)
+# print(toList(1225084652633465136))
+# print(getUtility(1225084652633465136))
+
+
 def new_game():
     return 0
 
@@ -20,7 +35,6 @@ def frees(board):
         if board & 0xf == 0:
             free += 1
         # free += ~(board | board >> 1 | board >> 2 | board >> 3) & 1
-        # print("frees updated to " + str(free))
         board = board >> 4
     return free
 
@@ -37,7 +51,6 @@ def add_two(board):
     return board | 1 << 4*(i-1)
 
 def transpose(board):
-    # res = np.uint64(0)
     # print(type(board))
     # print("in transpose, board is " + str(board))
     res = 0
@@ -59,34 +72,28 @@ def reverse(board):
     # print("bit length " + str(int.bit_length(board)))
     return board
 
-def move_row_right(board, row):
-    # b = np.uint64(0)
-    # print("in move row right, board is " + str(board))
+
+def move_row_left(board, row):
     b = (board >> 16*row) & 0xffff
     board = logic0.move_table[b] & 0xffff;
     return board << 16*row
 
 
-def up(board):
-    # print("in up, board is " + str(board))
-    return transpose(left(transpose(board)))
-
-
 def down(board):
-    # print("in down, board is " + str(board))
     return transpose(right(transpose(board)))
 
 
-def left(board):
-    # print("in left, board is " + str(board))
-    num = reverse(right(reverse(board)))
-    # print("left is returning " + str(num))
-    return num
+def up(board):
+    return transpose(left(transpose(board)))
 
 
 def right(board):
-    # print("in right, board is " + str(board))
-    return move_row_right(board, 0) | move_row_right(board, 1) | move_row_right(board, 2) | move_row_right(board, 3)
+    return reverse(left(reverse(board)))
+
+
+def left(board):
+    return move_row_left(board, 0) | move_row_left(board, 1) | move_row_left(board, 2) | move_row_left(board, 3)
+
 
 
 def move(board, dir):
@@ -114,6 +121,7 @@ def toList(board):
     for i in range(16):
         val = board >> 4 * i & 0xf
         ls.append(val)
+    ls.reverse()
     return ls
 
 def printBoard(board):
@@ -137,14 +145,12 @@ heu=[13.5, 12.1, 10.2, 9.9,9.9, 8.8, 7.6, 7.2,6.0, 5.6, 3.7, 1.6,1.2, 0.9, 0.5, 
 def getUtility(board):
     ls = toList(board) # list of exponents
     powerList = [2**exponent for exponent in ls] # list of actual values
-    multiplier = np.dot(heu, powerList)
-    return multiplier
+    return np.dot(heu, powerList)
 
-    # score = 0
-    # for val in ls:
-    #     score += singleScore[val]
-    # return score * multiplier
 
 def getMax(board):
     ls = toList(board)
     return max(ls)
+
+
+

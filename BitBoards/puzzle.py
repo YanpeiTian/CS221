@@ -17,14 +17,15 @@ def main():
         matrix=logic.add_two(matrix)
         while True:
             matrix=logic.add_two(matrix)
-            # logic.printBoard(matrix)
-            # if step % 100 == 0:
-            #     logic.printBoard(matrix)
             if logic.gameOver(matrix):
                 break
-
+            # print("given this board")
+            # logic.printBoard(matrix)
             move=ExpectiMax.getMove(matrix,DEPTH)
             matrix=ExpectiMax.moveGrid(matrix,move)
+            # print("expectimax recommends this move " + str(move))
+            # print("resulting in this board")
+            # logic.printBoard(matrix)
             step+=1
 
         print("Step= "+str(step))

@@ -1,5 +1,4 @@
 import random
-import numpy as np
 import logic
 
 FAIL_SCORE=-1e10
@@ -19,17 +18,10 @@ def getMove(grid,depth):
     return random.choice(index)
 
 def moveGrid(grid,i):
-    # print("expectimax move grid direction i " + str(i))
     return logic.move(grid, i)
 
 def isSame(grid1,grid2):
     return grid1 == grid2
-
-def getUtility(grid):
-    # return np.dot(heu3,2**grid.flatten())
-    # return np.dot(heu,logic.singleScore[logic.toList((grid))])
-    return logic.getScore(grid)
-    # return logic.getUtility(grid)
 
 # grid:   Game grid
 # depth:  search depth
@@ -40,13 +32,13 @@ def expectiMax(grid,agent,depth):
     if logic.gameOver(grid):
         return FAIL_SCORE
     if depth==0:
-        return getUtility(grid)
+        return logic.getUtility(grid)
 
     # Player's turn
     if agent==0:
         for i in range(4):
             newGrid=moveGrid(grid,i)
-            score = max(score, expectiMax(newGrid,1,depth))
+            score = max(score, expectiMax(newGrid, 1, depth))
         return score
     # Computer's turn
     elif agent==1:
@@ -62,8 +54,8 @@ def expectiMax(grid,agent,depth):
                 count += 1
                 # board |= 0x1 # add a 2 tile
                 # newBoard = (board << offset) | grid
-                newBoard = (1 << offset) | grid
-                score += expectiMax(newBoard, 0, depth -1)
+                newBoard = (1 << offset) | grid # add a 2 tile
+                score += expectiMax(newBoard, 0, depth - 1)
             board = board >> 4
             offset += 4
         # for i in range(4):
