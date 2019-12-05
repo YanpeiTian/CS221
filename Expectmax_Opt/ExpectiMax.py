@@ -32,13 +32,17 @@ def moveGrid(grid,i):
     if i==2:
         # move down
         grid=np.transpose(grid)
+        grid=np.fliplr(grid)
         for row in range(4):
-            new[row,:]=np.flip(logic.move(np.flip(grid[row,:])))
+            new[row,:]=logic.move(grid[row,:])
+        new=np.fliplr(new)
         new=np.transpose(new)
     if i==3:
         # move right
+        grid=np.fliplr(grid)
         for row in range(4):
-            new[row,:]=np.flip(logic.move(np.flip(grid[row,:])))
+            new[row,:]=logic.move(grid[row,:])
+        new=np.fliplr(new)
     return new
 
 def isSame(grid1,grid2):
