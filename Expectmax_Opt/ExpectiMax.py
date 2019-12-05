@@ -67,7 +67,8 @@ def expectiMax(grid,agent,depth):
     if agent==0:
         for i in range(4):
             newGrid=moveGrid(grid,i)
-            score = max(score, expectiMax(newGrid,1,depth))
+            if not isSame(grid,newGrid):
+                score = max(score, expectiMax(newGrid,1,depth))
         return score
     # Computer's turn
     elif agent==1:

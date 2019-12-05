@@ -7,8 +7,8 @@ import ExpectiMax
 import logic
 import multiprocessing
 
-ITERATION=100
-DEPTH=4
+ITERATION=10
+DEPTH=3
 
 def iteration(iter):
         start=time.time()

@@ -8,6 +8,10 @@ moveDict=np.load('move.npy')
 def add_two(mat):
     indexs=np.argwhere(mat==0)
     index=np.random.randint(0,len(indexs))
+    # if np.random.uniform()<0.9:
+    #     mat[tuple(indexs[index])] = 1
+    # else:
+    #     mat[tuple(indexs[index])] = 2
     mat[tuple(indexs[index])] = 1
     return mat
 
