@@ -7,7 +7,7 @@ import ExpectiMax
 import logic
 import multiprocessing
 
-ITERATION=10
+ITERATION=1
 DEPTH=3
 
 def iteration(iter):
