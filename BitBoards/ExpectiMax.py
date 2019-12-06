@@ -49,7 +49,7 @@ def expectiMax(grid,agent,depth):
         # right shift by 4
         board = grid
         offset = 0
-        while board != 0:
+        for i in range(16):
             if board & 0xf == 0:
                 count += 1
                 # board |= 0x1 # add a 2 tile
