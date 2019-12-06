@@ -7,10 +7,11 @@ import ExpectiMax
 import logic
 
 ITERATION=10 #100
-DEPTH=3
+DEPTH=2
 stat=[]
 
 def main():
+    f= open("expectimax2.txt","w+")
     for iteration in range(ITERATION):
         print("Iteration: "+str(iteration+1))
         start=time.time()
@@ -26,13 +27,10 @@ def main():
             matrix=ExpectiMax.moveGrid(matrix,move)
             step+=1
 
-        print("Step= "+str(step))
-        print("Max= "+str(2**np.max(matrix)))
-        print("Score= "+str(logic.getScore(matrix)))
-        print('Depth= '+str(DEPTH))
-        print('Time= '+str(time.time()-start))
-        print('')
-        stat.append((step,2**np.max(matrix),logic.getScore(matrix)))
+        f.write("Step %d, max %d, Score %d, \r\n" % (step, 2**np.max(matrix), logic.getScore(matrix)))
+        f.flush()
+
+    f.close()
 
 if __name__ == '__main__':
     main()

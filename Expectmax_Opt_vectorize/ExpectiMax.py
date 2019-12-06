@@ -49,7 +49,7 @@ def expectiMax(grid,agent,depth):
     if(logic.game_state(grid)=='lose'):
         return FAIL_SCORE
     if depth==0:
-        return getUtility(grid)
+        return logic.getScore(grid) #getUtility(grid)
 
     # Player's turn
     if agent==0:
