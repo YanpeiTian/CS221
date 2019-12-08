@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import logic0
+import utilLookupTable
 
 # 64-bit int representing a board. Format:
 # [63-60][59-56][55-52][51-48]
@@ -8,6 +9,12 @@ import logic0
 # [31-28][27-24][23-20][19-16]
 # [15-12][11- 8][ 7- 4][ 3- 0]
 
+# count bit position from right to left
+# b63 b62 b61 b60 ... b3 b2 b1 b0
+# so the first row will be represented first in the 64 bit integer
+# the last row will be the last 16 bits of the 64 bit integer
+
+# test cases
 # from Expectmax_Opt_vectorize, got board:
 # [[1 1 0 0]
 #  [6 0 0 0]
@@ -18,6 +25,18 @@ import logic0
 
 # transcribed board into binary
 # 0x0001000100000000 0110000000000000 0011010000000000 0010000100110000
+# 4352               24576            13312            8496
+# first row 4352
+# powerlist of 1 1 0 0 dotted with 13.5, 12.1, 10.2, 9.9
+# = 71.3
+# second row 24576
+# powerlist of 6 0 0 0 dotted with 9.9, 8.8, 7.6, 7.2
+# = 657.2
+# powerlist of 3 4 0 0 dotted with 6.0, 5.6, 3.7, 1.6
+# = 142.9
+# powerlist of 2 1 3 0 dotted with 1.2, 0.9, 0.5, 0.3
+# = 10.9
+# their sum is 882.3
 # printBoard(1225084652633465136)
 # print(toList(1225084652633465136))
 # print(getUtility(1225084652633465136))
@@ -127,6 +146,7 @@ def toList(board):
 def printBoard(board):
     print("Printing current board configuration")
     ls = toList(board)
+    print(ls)
     for i in range(16):
         print(ls[i], end='  ')
         if (i+1) % 4 == 0:
@@ -142,15 +162,80 @@ def getScore(board):
     return score
 
 heu=[13.5, 12.1, 10.2, 9.9,9.9, 8.8, 7.6, 7.2,6.0, 5.6, 3.7, 1.6,1.2, 0.9, 0.5, 0.3]
-def getUtility(board):
+def getUtility2(board):
     ls = toList(board) # list of exponents
+    # print(ls)
     powerList = [2**exponent for exponent in ls] # list of actual values
+    # print(powerList)
+    # print(heu)
     return np.dot(heu, powerList)
+
+def getUtility(board):
+    # official = getUtility2(board)
+    # 16 bits at a time
+    # row 1
+    # printBoard(board)
+    # rowOne = board & 0xff
+    # util = utilLookupTable.utilRowOne[rowOne]
+    # print("row 4 util " + str(util))
+    #
+    # board = board >> 16
+    # rowTwo = board & 0xff
+    # util += utilLookupTable.utilRowTwo[rowTwo]
+    # print("row 3 util " + str(utilLookupTable.utilRowTwo[rowTwo]))
+    #
+    # board = board >> 16
+    # rowThree = board & 0xff
+    # util += utilLookupTable.utilRowThree[rowThree]
+    # print("row 2 util " + str(utilLookupTable.utilRowThree[rowThree]))
+    #
+    #
+    # board = board >> 16
+    # rowFour = board & 0xff
+    # util += utilLookupTable.utilRowFour[rowFour]
+    # print("row 1 util " + str(utilLookupTable.utilRowFour[rowFour]))
+
+    # printBoard(board)
+    rowFour = board & 0xffff
+    util = utilLookupTable.utilRowFour[rowFour]
+    # print("printing board's binary = " + str(bin(board)))
+    # print("row 4 16 bits to int = " + str(rowFour))
+    # print(bin(rowFour))
+    # print("row 4 util " + str(util))
+
+    board = board >> 16
+    rowThree = board & 0xffff
+    util += utilLookupTable.utilRowThree[rowThree]
+    # print("printing board's binary = " + str(bin(board)))
+    # print("row 3 16 bits to int = " + str(rowThree))
+    # print(bin(rowThree))
+    # print("row 3 util " + str(utilLookupTable.utilRowThree[rowThree]))
+
+    board = board >> 16
+    rowTwo = board & 0xffff
+    util += utilLookupTable.utilRowTwo[rowTwo]
+    # print("printing board's binary = " + str(bin(board)))
+    # print("row 2 16 bits to int = " + str(rowTwo))
+    # print(bin(rowTwo))
+    # print("row 2 util " + str(utilLookupTable.utilRowTwo[rowTwo]))
+
+
+    board = board >> 16
+    rowOne = board & 0xffff
+    util += utilLookupTable.utilRowOne[rowOne]
+    # print("printing board's binary = " + str(bin(board)))
+    # print("row 1 16 bits to int = " + str(rowOne))
+    # print(bin(rowOne))
+    # print("row 1 util " + str(utilLookupTable.utilRowOne[rowOne]))
+
+
+    # if official != util:
+    #     print("should get " + str(official))
+    #     print("but got " + str(util) + " instead")
+    #     print()
+    return util
 
 
 def getMax(board):
     ls = toList(board)
     return max(ls)
-
-
-

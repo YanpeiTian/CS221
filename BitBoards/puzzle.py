@@ -4,8 +4,8 @@ import time
 import ExpectiMax
 import logic
 
-ITERATION=1
-DEPTH=2
+ITERATION=2
+DEPTH=3
 stat=[]
 
 def main():
