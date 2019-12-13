@@ -24,7 +24,7 @@ import utilLookupTable
 #  882.3000000000001
 
 # transcribed board into binary
-# 0x0001000100000000 0110000000000000 0011010000000000 0010000100110000
+# 0b0001000100000000 0110000000000000 0011010000000000 0010000100110000
 # 4352               24576            13312            8496
 # first row 4352
 # powerlist of 1 1 0 0 dotted with 13.5, 12.1, 10.2, 9.9
@@ -171,31 +171,6 @@ def getUtility2(board):
     return np.dot(heu, powerList)
 
 def getUtility(board):
-    # official = getUtility2(board)
-    # 16 bits at a time
-    # row 1
-    # printBoard(board)
-    # rowOne = board & 0xff
-    # util = utilLookupTable.utilRowOne[rowOne]
-    # print("row 4 util " + str(util))
-    #
-    # board = board >> 16
-    # rowTwo = board & 0xff
-    # util += utilLookupTable.utilRowTwo[rowTwo]
-    # print("row 3 util " + str(utilLookupTable.utilRowTwo[rowTwo]))
-    #
-    # board = board >> 16
-    # rowThree = board & 0xff
-    # util += utilLookupTable.utilRowThree[rowThree]
-    # print("row 2 util " + str(utilLookupTable.utilRowThree[rowThree]))
-    #
-    #
-    # board = board >> 16
-    # rowFour = board & 0xff
-    # util += utilLookupTable.utilRowFour[rowFour]
-    # print("row 1 util " + str(utilLookupTable.utilRowFour[rowFour]))
-
-    # printBoard(board)
     rowFour = board & 0xffff
     util = utilLookupTable.utilRowFour[rowFour]
     # print("printing board's binary = " + str(bin(board)))
@@ -228,11 +203,6 @@ def getUtility(board):
     # print(bin(rowOne))
     # print("row 1 util " + str(utilLookupTable.utilRowOne[rowOne]))
 
-
-    # if official != util:
-    #     print("should get " + str(official))
-    #     print("but got " + str(util) + " instead")
-    #     print()
     return util
 
 
